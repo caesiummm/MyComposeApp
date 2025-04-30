@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -55,10 +56,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.statecompose.R
+import com.example.statecompose.ui.theme.DarkLightModePreviews
+import com.example.statecompose.ui.theme.FontScalePreviews
+import com.example.statecompose.ui.theme.MyComposeAppTheme
 import com.example.statecompose.ui.theme.boundedClickable
 import com.example.statecompose.ui.theme.randomColor
 
-@Preview(showSystemUi = true)
+//@Preview(showSystemUi = true)
 @Composable
 fun LayoutHomeScreenPortrait() {
     Scaffold(
@@ -76,11 +80,11 @@ fun LayoutHomeScreenPortrait() {
     }
 }
 
-@Preview(
+/*@Preview(
     name = "Phone - Landscape",
     device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape",
     showSystemUi = true
-)
+)*/
 @Composable
 fun LayoutHomeScreenLandscape() {
     Row {
@@ -225,7 +229,6 @@ private fun BottomNavBar(modifier: Modifier = Modifier, onTabClick: () -> Unit =
     }
 }
 
-@Preview
 @Composable
 private fun LayoutScreenNavigationRail(modifier: Modifier = Modifier, onTabClick: () -> Unit = {}) {
     NavigationRail(
@@ -271,7 +274,7 @@ private fun LayoutScreenNavigationRail(modifier: Modifier = Modifier, onTabClick
     }
 }
 
-@Preview
+@FontScalePreviews
 @Composable
 private fun PreviewTaskCard() {
     TaskCard(
@@ -317,14 +320,16 @@ private fun TaskCard(
     }
 }
 
-@Preview
+@DarkLightModePreviews
 @Composable
 private fun PreviewCollectionCard() {
-    CollectionCard(
-        drawableRes = R.drawable.ic_launcher_foreground,
-        drawableColor = MaterialTheme.colorScheme.inverseOnSurface,
-        cardTitle = R.string.app_name
-    )
+    MyComposeAppTheme {
+        CollectionCard(
+            drawableRes = R.drawable.ic_launcher_foreground,
+            drawableColor = MaterialTheme.colorScheme.inverseOnSurface,
+            cardTitle = R.string.app_name
+        )
+    }
 }
 
 @Composable
