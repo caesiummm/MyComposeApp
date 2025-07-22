@@ -3,6 +3,10 @@ package com.example.statecompose.content
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,17 +45,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.statecompose.R
 
+enum class PanelType {
+    First, Second, Third
+}
+
 @Composable
 fun StatefulButtonState() {
-    val isSelected = rememberSaveable { mutableStateOf(false) }
+    // Keep track of the currently selected panel
+    val selectedPanel = rememberSaveable { mutableStateOf<PanelType?>(null) }
+
     MenuContent(
-        isSelected = isSelected,
-        onSelect = { isSelected.value = !isSelected.value }
+        selectedPanel = selectedPanel,
+        onSelectPanel = { panelType ->
+            // Toggle the panel if it's already selected, otherwise select it
+            selectedPanel.value = if (selectedPanel.value == panelType) null else panelType
+        }
     )
 }
 
 @Composable
-fun MenuContent(isSelected: State<Boolean>, onSelect: () -> Unit) {
+fun MenuContent(selectedPanel: State<PanelType?>, onSelectPanel: (PanelType) -> Unit) {
     Column(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,15 +72,54 @@ fun MenuContent(isSelected: State<Boolean>, onSelect: () -> Unit) {
             .fillMaxSize()
             .safeContentPadding()
     ) {
-        MenuPanel(isSelected, onSelect)
-        AnimatedVisibility(isSelected.value) {
+        // Menu panel with buttons is always visible at the bottom
+        MenuPanel(selectedPanel, onSelectPanel)
+
+        // Show the appropriate panel based on selection
+        AnimatedVisibility(
+            visible = selectedPanel.value == PanelType.First,
+            enter = fadeIn(animationSpec = tween(300)) + expandVertically(
+                animationSpec = tween(300),
+                expandFrom = Alignment.Top
+            ),
+            exit = fadeOut(animationSpec = tween(300)) + shrinkVertically(
+                animationSpec = tween(300),
+                shrinkTowards = Alignment.Top
+            )
+        ) {
             FirstPanel()
+        }
+        AnimatedVisibility(
+            visible = selectedPanel.value == PanelType.Second,
+            enter = fadeIn(animationSpec = tween(300)) + expandVertically(
+                animationSpec = tween(300),
+                expandFrom = Alignment.Top
+            ),
+            exit = fadeOut(animationSpec = tween(300)) + shrinkVertically(
+                animationSpec = tween(300),
+                shrinkTowards = Alignment.Top
+            )
+        ) {
+            SecondPanel()
+        }
+        AnimatedVisibility(
+            visible = selectedPanel.value == PanelType.Third,
+            enter = fadeIn(animationSpec = tween(300)) + expandVertically(
+                animationSpec = tween(300),
+                expandFrom = Alignment.Top
+            ),
+            exit = fadeOut(animationSpec = tween(300)) + shrinkVertically(
+                animationSpec = tween(300),
+                shrinkTowards = Alignment.Top
+            )
+        ) {
+            ThirdPanel()
         }
     }
 }
 
 @Composable
-private fun MenuPanel(isSelected: State<Boolean>, onSelect: () -> Unit) {
+private fun MenuPanel(selectedPanel: State<PanelType?>, onSelectPanel: (PanelType) -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier = Modifier
@@ -78,19 +130,28 @@ private fun MenuPanel(isSelected: State<Boolean>, onSelect: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        FirstButton(isSelected, onSelect = {
-            keyboardController?.hide()
-            onSelect()
-        })
+        FirstButton(
+            isSelected = remember { derivedStateOf { selectedPanel.value == PanelType.First } },
+            onSelect = {
+                keyboardController?.hide()
+                onSelectPanel(PanelType.First)
+            }
+        )
         CustomTextField()
-        SecondButton(isSelected, onSelect = {
-            keyboardController?.hide()
-            onSelect()
-        })
-        ThirdButton(isSelected, onSelect = {
-            keyboardController?.hide()
-            onSelect()
-        })
+        SecondButton(
+            isSelected = remember { derivedStateOf { selectedPanel.value == PanelType.Second } },
+            onSelect = {
+                keyboardController?.hide()
+                onSelectPanel(PanelType.Second)
+            }
+        )
+        ThirdButton(
+            isSelected = remember { derivedStateOf { selectedPanel.value == PanelType.Third } },
+            onSelect = {
+                keyboardController?.hide()
+                onSelectPanel(PanelType.Third)
+            }
+        )
     }
 }
 
@@ -109,8 +170,44 @@ private fun FirstPanel() {
 }
 
 @Composable
+private fun SecondPanel() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .background(Color.Blue)
+            .fillMaxWidth()
+            .height(80.dp)
+    ) {
+        Text(text = "Second Panel", fontSize = 30.sp)
+    }
+}
+
+@Composable
+private fun ThirdPanel() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .background(Color.Green)
+            .fillMaxWidth()
+            .height(250.dp)
+    ) {
+        Text(text = "Third Panel", fontSize = 30.sp)
+    }
+}
+
+@Composable
 private fun FirstButton(isSelected: State<Boolean>, onSelect: () -> Unit) {
     MenuButton("A", isSelected, onSelect)
+}
+
+@Composable
+private fun SecondButton(isSelected: State<Boolean>, onSelect: () -> Unit) {
+    MenuButton("B", isSelected, onSelect)
+}
+
+@Composable
+private fun ThirdButton(isSelected: State<Boolean>, onSelect: () -> Unit) {
+    MenuButton("C", isSelected, onSelect)
 }
 
 @Composable
@@ -145,25 +242,14 @@ private fun CustomTextField() {
 }
 
 @Composable
-private fun SecondButton(isSelected: State<Boolean>, onSelect: () -> Unit) {
-    MenuButton("B", isSelected, onSelect)
-}
-
-@Composable
-private fun ThirdButton(isSelected: State<Boolean>, onSelect: () -> Unit) {
-    MenuButton("C", isSelected, onSelect)
-}
-
-@Composable
 private fun MenuButton(text: String, isSelected: State<Boolean>, onSelect: () -> Unit) {
-    val selectedButtonState = remember { derivedStateOf { isSelected.value } }
     val animatedColorState by animateColorAsState(
-        targetValue = if (selectedButtonState.value) Color.DarkGray else Color.LightGray,
+        targetValue = if (isSelected.value) Color.DarkGray else Color.LightGray,
         animationSpec = tween(300),
         label = "MenuButtonAnimatedColor"
     )
     Surface(
-        selected = selectedButtonState.value,
+        selected = isSelected.value,
         onClick = onSelect,
         shape = CircleShape,
         color = animatedColorState,
@@ -173,8 +259,4 @@ private fun MenuButton(text: String, isSelected: State<Boolean>, onSelect: () ->
             Text(text = text)
         }
     }
-}
-
-enum class PanelType {
-    FirstPanel, SecondPanel, ThirdPanel
 }
