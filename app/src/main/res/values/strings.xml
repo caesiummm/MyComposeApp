@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Can You Compose?</string>
+    <string name="accordion_menu_title">Accordion</string>
+    <string name="basic_layout_menu_title">Basic Layout</string>
+    <string name="multi_panel_menu_title">Multi-panel</string>
+    <string name="launched_effect_screen_menu_title">LaunchedEffect Screen</string>
+    <string name="wellness_screen_menu_title">Wellness Screen</string>
 </resources>

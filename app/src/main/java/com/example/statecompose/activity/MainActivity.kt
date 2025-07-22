@@ -19,10 +19,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.statecompose.R
 import com.example.statecompose.ui.theme.MyComposeAppTheme
 import com.example.statecompose.ui.theme.boundedClickable
 
@@ -56,27 +58,27 @@ fun HomeScreen() {
         verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically)
     ) {
         item {
-            MainMenuButton(text = "Wellness Screen") {
+            MainMenuButton(text = stringResource(R.string.wellness_screen_menu_title)) {
                 context.startActivity(Intent(context, WellnessActivity::class.java))
             }
         }
         item {
-            MainMenuButton(text = "LaunchedEffect Screen") {
+            MainMenuButton(text = stringResource(R.string.launched_effect_screen_menu_title)) {
                 context.startActivity(Intent(context, LaunchedEffectActivity::class.java))
             }
         }
         item {
-            MainMenuButton(text = "Menu Screen") {
+            MainMenuButton(text = stringResource(R.string.multi_panel_menu_title)) {
                 context.startActivity(Intent(context, BottomMenuPanelActivity::class.java))
             }
         }
         item {
-            MainMenuButton(text = "Accordion") {
+            MainMenuButton(text = stringResource(R.string.accordion_menu_title)) {
                 context.startActivity(Intent(context, AccordionActivity::class.java))
             }
         }
         item {
-            MainMenuButton(text = "Basic Layout") {
+            MainMenuButton(text = stringResource(R.string.basic_layout_menu_title)) {
                 context.startActivity(Intent(context, BasicLayoutActivity::class.java))
             }
         }
