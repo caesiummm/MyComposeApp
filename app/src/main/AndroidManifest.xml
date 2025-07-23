@@ -44,6 +44,9 @@
             android:exported="true"
             android:screenOrientation="unspecified"
             android:theme="@style/Theme.StateCompose" />
+        <activity android:name=".activity.AnimateShapeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.StateCompose" />
     </application>
 
 </manifest>

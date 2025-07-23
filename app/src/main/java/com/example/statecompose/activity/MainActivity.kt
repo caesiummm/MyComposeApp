@@ -82,6 +82,11 @@ fun HomeScreen() {
                 context.startActivity(Intent(context, BasicLayoutActivity::class.java))
             }
         }
+        item {
+            MainMenuButton(text = stringResource(R.string.animate_shape_menu_title)) {
+                context.startActivity(Intent(context, AnimateShapeActivity::class.java))
+            }
+        }
     }
 }
 
